@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Energia Elétrica</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 100%;
+            margin: auto;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .container {
+            max-width: 400px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        label, input, button {
+            display: block;
+            margin-bottom: 10px;
+            width: 100%;
+        }
+        input {
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        h2 {
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .container {
+                width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Calculadora de Energia</h2>
+        <label>Tarifa TUSD (R$/kWh):</label>
+        <input type="number" id="tusd" step="0.01">
+        <label>Tarifa TE (R$/kWh):</label>
+        <input type="number" id="te" step="0.01">
+        
+        <label>Leitura Anterior (kWh):</label>
+        <input type="number" id="leitura_antiga">
+        <label>Leitura Atual (kWh):</label>
+        <input type="number" id="leitura_nova">
+        
+        <label>Outras Tarifas (R$):</label>
+        <input type="number" id="tarifa_extra" step="0.01">
+        
+        <button onclick="calcular()">Calcular</button>
+        
+        <h3>Resultado:</h3>
+        <p>Consumo: <span id="consumo">0</span> kWh</p>
+        <p>Valor da Conta: R$ <span id="valor_conta">0.00</span></p>
+    </div>
+    
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("tusd").value = localStorage.getItem("tusd") || "";
+            document.getElementById("te").value = localStorage.getItem("te") || "";
+            document.getElementById("leitura_antiga").value = localStorage.getItem("leitura_antiga") || "";
+            document.getElementById("tarifa_extra").value = localStorage.getItem("tarifa_extra") || "";
+        });
+
+        function calcular() {
+            let tusd = parseFloat(document.getElementById("tusd").value) || 0;
+            let te = parseFloat(document.getElementById("te").value) || 0;
+            let leituraAntiga = parseFloat(document.getElementById("leitura_antiga").value) || 0;
+            let leituraNova = parseFloat(document.getElementById("leitura_nova").value) || 0;
+            let tarifaExtra = parseFloat(document.getElementById("tarifa_extra").value) || 0;
+
+            localStorage.setItem("tusd", tusd);
+            localStorage.setItem("te", te);
+            localStorage.setItem("leitura_antiga", leituraAntiga);
+            localStorage.setItem("tarifa_extra", tarifaExtra);
+
+            let consumo = leituraNova - leituraAntiga;
+            let valorConta = (consumo * (tusd + te)) + tarifaExtra;
+            
+            document.getElementById("consumo").textContent = consumo;
+            document.getElementById("valor_conta").textContent = valorConta.toFixed(2);
+        }
+    </script>
+</body>
+</html>
